@@ -3,6 +3,7 @@ package net.degoes
 import java.time.Instant
 
 /*
+ * Day 1 - 1:32:55
  * INTRODUCTION
  *
  * Functional Design depends heavily on functional data modeling. Functional
