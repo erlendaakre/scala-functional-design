@@ -2,6 +2,7 @@ package net.degoes
 
 import java.net.URL
 import java.time.Instant
+import java.time.temporal.TemporalField
 
 /*
  * Day 1 - 1:32:55
@@ -69,7 +70,22 @@ object credit_card {
    * of a product price, which could be one-time purchase fee, or a recurring
    * fee on some regular interval.
    */
-  type PricingScheme
+  final case class PricingScheme(price: Double, recurrence: Recurrence)
+
+  sealed trait Recurrence
+  object Recurrence {
+    final case object OneTime extends Recurrence
+    final case class Recurring(startDate: java.time.LocalDate, interval: TemporalType)
+  }
+
+  sealed trait TemporalType {
+    val value: Int
+  }
+  object TemporalType {
+    final case class Weekly(override val value: Int) extends TemporalType
+    final case class Monthly(override val value: Int) extends TemporalType
+    final case class Yearly(override val value: Int) extends TemporalType
+  }
 }
 
 /**
