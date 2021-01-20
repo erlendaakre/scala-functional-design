@@ -1,5 +1,7 @@
 package net.degoes
 
+import net.degoes.events.EventType.SensorUpdated
+
 import java.net.URL
 import java.time.Instant
 import java.time.temporal.TemporalField
@@ -112,6 +114,7 @@ object events {
    * functional one, which uses only sealed traits and case classes.
    */
   sealed case class Event(id: Int, time: Instant, kind: EventType)
+  sealed case class EventPoly[+A](id: Int, time: Instant, kind: A)
 
   sealed trait EventType
   object EventType {
@@ -124,6 +127,8 @@ object events {
     case class UserAccountCreated(override val userName: String) extends User(userName)
   }
 
+  val x: Event = Event(5412, Instant.now(), SensorUpdated(1, Some(21.5)))
+  val y: EventPoly[SensorUpdated] = EventPoly[SensorUpdated](5413, Instant.now, SensorUpdated(1, Some(21.5)))
 }
 
 /**
