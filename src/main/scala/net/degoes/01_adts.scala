@@ -1,10 +1,6 @@
 package net.degoes
 
-import net.degoes.events.EventType.SensorUpdated
-
-import java.net.URL
 import java.time.Instant
-import java.time.temporal.TemporalField
 
 /*
  * Day 1 - 1:32:55
@@ -106,29 +102,55 @@ object credit_card {
  * devices, as well as users.
  */
 object events {
-
   /**
    * EXERCISE
    *
    * Refactor the object-oriented data model in this section to a more
    * functional one, which uses only sealed traits and case classes.
    */
-  sealed case class Event(id: Int, time: Instant, kind: EventType)
-  sealed case class EventPoly[+A](id: Int, time: Instant, kind: A)
 
-  sealed trait EventType
-  object EventType {
-    private case class User(userName: String) extends EventType
-    private case class Device(deviceId: Int) extends EventType
+  object EA {
 
-    case class SensorUpdated(override val deviceId: Int, reading: Option[Double]) extends Device(deviceId)
-    case class DeviceActivated(override val deviceId: Int) extends Device(deviceId)
-    case class UserPurchase(override val userName: String, item: String, price: Double) extends User(userName)
-    case class UserAccountCreated(override val userName: String) extends User(userName)
+    sealed case class Event(id: Int, time: Instant, kind: EventType)
+    sealed case class EventPoly[+A](id: Int, time: Instant, kind: A)
+
+    sealed trait EventType
+    object EventType {
+      private case class User(userName: String) extends EventType
+      private case class Device(deviceId: Int) extends EventType
+
+      case class SensorUpdated(override val deviceId: Int, reading: Option[Double]) extends Device(deviceId)
+      case class DeviceActivated(override val deviceId: Int) extends Device(deviceId)
+      case class UserPurchase(override val userName: String, item: String, price: Double) extends User(userName)
+      case class UserAccountCreated(override val userName: String) extends User(userName)
+    }
+
+    import net.degoes.events.EA.EventType._
+    val x: Event = Event(5412, Instant.now(), SensorUpdated(1, Some(21.5)))
+    val y: EventPoly[SensorUpdated] = EventPoly[SensorUpdated](5413, Instant.now, SensorUpdated(1, Some(21.5)))
+    val l: Seq[Event] = List(x, x)
   }
 
-  val x: Event = Event(5412, Instant.now(), SensorUpdated(1, Some(21.5)))
-  val y: EventPoly[SensorUpdated] = EventPoly[SensorUpdated](5413, Instant.now, SensorUpdated(1, Some(21.5)))
+  object JDG {
+    sealed case class Event[+A](id: Int, time: Instant, kind: A)
+
+    final case class UserEvent(userName: String, userEventType: UserEventType)
+    sealed trait UserEventType {
+      case class Purchase(item: String, price: Double) extends UserEventType
+      case object AccountCreated extends UserEventType
+    }
+
+    final case class DeviceEvent(deviceId: Int, deviceEventType: DeviceEventType)
+    sealed trait DeviceEventType
+    object DeviceEventType {
+      case class SensorUpdated(reading: Option[Double]) extends DeviceEventType
+      case object DeviceActivated extends DeviceEventType
+    }
+
+    import net.degoes.events.JDG.DeviceEventType.SensorUpdated
+    val y: Event[SensorUpdated] = Event[SensorUpdated](5413, Instant.now, SensorUpdated(Some(21.5)))
+    val l: Seq[Event[SensorUpdated]] = List(y)
+  }
 }
 
 /**
