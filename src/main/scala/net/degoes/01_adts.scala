@@ -33,10 +33,13 @@ object credit_card {
    */
   final case class CreditCard(number: String, name: String, expiration: java.time.YearMonth, cvv: SecurityCode)
 
-  class SecurityCode(value: Int)
+  sealed abstract case class SecurityCode(value: Int)
   object SecurityCode {
     def fromInt(code: Int): Option[SecurityCode] =
-      if(code > 0 && code < 1000) Some(new SecurityCode(code)) else None
+      if(code.toString.length >= 3 && code.toString.length <= 4)
+        Some(new SecurityCode(code){}) // becomes subtype of SecurityCode
+      else
+        None
   }
 
   /**
