@@ -58,9 +58,9 @@ object credit_card {
     final case class Event(date: java.time.LocalDate) extends ProductType
   }
 
-  final case class Product(kind: ProductType, name: String, cost: Double)
-
-  def increasePrice(p: Product, amount: Double): Product = p.copy(cost = p.cost + amount)
+  final case class Product(kind: ProductType, name: String, cost: Double) { self =>
+    def increasePrice(amount: Double): Product = self.copy(cost = self.cost + amount)
+  }
 
   /**
    * EXERCISE 3
