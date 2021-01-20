@@ -125,6 +125,7 @@ object events {
       case class UserAccountCreated(override val userName: String) extends User(userName)
     }
 
+    // testing
     import net.degoes.events.EA.EventType._
     val x: Event = Event(5412, Instant.now(), SensorUpdated(1, Some(21.5)))
     val y: EventPoly[SensorUpdated] = EventPoly[SensorUpdated](5413, Instant.now, SensorUpdated(1, Some(21.5)))
@@ -147,9 +148,13 @@ object events {
       case object DeviceActivated extends DeviceEventType
     }
 
+    // testing
     import net.degoes.events.JDG.DeviceEventType.SensorUpdated
     val y: Event[SensorUpdated] = Event[SensorUpdated](5413, Instant.now, SensorUpdated(Some(21.5)))
     val l: Seq[Event[SensorUpdated]] = List(y)
+
+    def idPlusOne[A](event: Event[A]): Int = event.id + 1
+    val x: Int = idPlusOne(y)
   }
 }
 
