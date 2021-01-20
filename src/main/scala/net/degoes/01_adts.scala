@@ -70,6 +70,15 @@ object credit_card {
    * of a product price, which could be one-time purchase fee, or a recurring
    * fee on some regular interval.
    */
+
+  // JDG:
+  sealed trait PricingSceme2
+  object PricingSceme2 {
+    final case class OneTime(amount: Double) extends PricingSceme2
+    final case class Subscription(amount: Double, start: java.time.Instant, interval: java.time.Duration) extends PricingSceme2
+  }
+
+  // EA:
   final case class PricingScheme(price: Double, recurrence: Recurrence)
 
   sealed trait Recurrence
