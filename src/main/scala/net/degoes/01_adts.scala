@@ -1,5 +1,6 @@
 package net.degoes
 
+import java.net.URL
 import java.time.Instant
 
 /*
@@ -36,8 +37,8 @@ object credit_card {
   sealed abstract case class SecurityCode(value: Int)
   object SecurityCode {
     def fromInt(code: Int): Option[SecurityCode] =
-      if(code.toString.length >= 3 && code.toString.length <= 4)
-        Some(new SecurityCode(code){}) // becomes subtype of SecurityCode
+      if (code.toString.length >= 3 && code.toString.length <= 4)
+        Some(new SecurityCode(code) {}) // becomes subtype of SecurityCode
       else
         None
   }
@@ -52,12 +53,14 @@ object credit_card {
    */
   sealed trait ProductType
   object ProductType {
-    case object Physical extends ProductType
-    case object Digital extends ProductType
-    case object Event extends ProductType
+    final case class Physical(weight: Double)         extends ProductType
+    final case class Digital(url: java.net.URL)       extends ProductType
+    final case class Event(date: java.time.LocalDate) extends ProductType
   }
 
-  case class Product(kind: ProductType, name: String, cost: Double)
+  final case class Product(kind: ProductType, name: String, cost: Double)
+
+  def increasePrice(p: Product, amount: Double): Product = p.copy(cost = p.cost + amount)
 
   /**
    * EXERCISE 3
