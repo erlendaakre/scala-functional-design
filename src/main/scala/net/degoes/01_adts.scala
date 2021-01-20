@@ -111,34 +111,18 @@ object events {
    * Refactor the object-oriented data model in this section to a more
    * functional one, which uses only sealed traits and case classes.
    */
-  abstract class Event(val id: Int) {
+  sealed case class Event(id: Int, time: Instant, kind: EventType)
 
-    def time: Instant
+  sealed trait EventType
+  object EventType {
+    private case class User(userName: String) extends EventType
+    private case class Device(deviceId: Int) extends EventType
+
+    case class SensorUpdated(override val deviceId: Int, reading: Option[Double]) extends Device(deviceId)
+    case class DeviceActivated(override val deviceId: Int) extends Device(deviceId)
+    case class UserPurchase(override val userName: String, item: String, price: Double) extends User(userName)
+    case class UserAccountCreated(override val userName: String) extends User(userName)
   }
-
-  // Events are either UserEvent (produced by a user) or DeviceEvent (produced by a device),
-  // please don't extend both it will break code!!!
-  trait UserEvent extends Event {
-    def userName: String
-  }
-
-  // Events are either UserEvent (produced by a user) or DeviceEvent (produced by a device),
-  // please don't extend both it will break code!!!
-  trait DeviceEvent extends Event {
-    def deviceId: Int
-  }
-
-  class SensorUpdated(id: Int, val deviceId: Int, val time: Instant, val reading: Option[Double])
-      extends Event(id)
-      with DeviceEvent
-
-  class DeviceActivated(id: Int, val deviceId: Int, val time: Instant) extends Event(id) with DeviceEvent
-
-  class UserPurchase(id: Int, val item: String, val price: Double, val time: Instant, val userName: String)
-      extends Event(id)
-      with UserEvent
-
-  class UserAccountCreated(id: Int, val userName: String, val time: Instant) extends Event(id) with UserEvent
 
 }
 
