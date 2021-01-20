@@ -31,7 +31,8 @@ object credit_card {
    *  * Expiration date
    *  * Security code
    */
-  type CreditCard
+//  type CreditCard
+  final case class CreditCard(number: String, name: String, expiration: java.util.Date, CCV: Int)
 
   /**
    * EXERCISE 2
