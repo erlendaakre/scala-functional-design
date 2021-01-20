@@ -31,8 +31,14 @@ object credit_card {
    *  * Expiration date
    *  * Security code
    */
-//  type CreditCard
-  final case class CreditCard(number: String, name: String, expiration: java.util.Date, CCV: Int)
+  final case class CreditCard(number: String, name: String, expiration: java.time.YearMonth, cvv: SecurityCode)
+
+  final class SecurityCode(code: Int)
+  case object SecurityCode {
+    def apply(code: Int): Option[SecurityCode] = {
+      if(code > 0 && code < 1000) Some(new SecurityCode(code)) else None
+    }
+  }
 
   /**
    * EXERCISE 2
@@ -42,7 +48,14 @@ object credit_card {
    * or a digital product, such as a book or movie, or access to an event, such
    * as a music concert or film showing.
    */
-  type Product
+  sealed trait ProductType
+  object ProductType {
+    case object Physical extends ProductType
+    case object Digital extends ProductType
+    case object Event extends ProductType
+  }
+
+  case class Product(kind: ProductType, name: String, cost: Double)
 
   /**
    * EXERCISE 3
