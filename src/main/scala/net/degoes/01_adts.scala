@@ -175,7 +175,15 @@ object documents {
    * Using only sealed traits and case classes, create a simplified but somewhat
    * realistic model of a Document.
    */
-  type Document
+  final case class Document(docId: DocId, owner: UserId, title: String, body: DocContent, docType: DocType)
+
+  sealed trait DocType
+  object DocType {
+    final case object PDF extends DocType
+    final case object MP3 extends DocType
+    final case object MKV extends DocType
+    final case class Custom(filetype: String)
+  }
 
   /**
    * EXERCISE 2
@@ -184,7 +192,14 @@ object documents {
    * type that a given user might have with respect to a document. For example,
    * some users might have read-only permission on a document.
    */
-  type AccessType
+  sealed trait AccessType
+  object AccessType {
+    final case object Create extends AccessType
+    final case object Delete extends AccessType
+    final case object Modify extends AccessType
+    final case object Read extends AccessType
+    final case object List extends AccessType
+  }
 
   /**
    * EXERCISE 3
@@ -193,7 +208,7 @@ object documents {
    * permissions that a user has on a set of documents they have access to.
    * Do not store the document contents themselves in this model.
    */
-  type DocPermissions
+  final case class DocPermissions(docId: DocId, userId: UserId, permissions: Set[AccessType])
 }
 
 /**
