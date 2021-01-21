@@ -1,6 +1,7 @@
 package net.degoes
 
 /*
+* Day 1 - 4:18:30
  * INTRODUCTION
  *
  * In Functional Design, immutable values often model solutions to a problem,
