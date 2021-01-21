@@ -223,7 +223,9 @@ object bank {
    *
    * Using only sealed traits and case classes, develop a model of a customer at a bank.
    */
-  type Customer
+  type CustomerId
+  type CustomerAddress
+  final case class Customer(id: CustomerId, address: CustomerAddress)
 
   /**
    * EXERCISE 2
