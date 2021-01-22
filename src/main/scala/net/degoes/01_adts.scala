@@ -263,10 +263,10 @@ object bank {
   sealed trait AccountAccess
   object AccountAccess {
     final case object ViewBalance extends AccountAccess
-    final case class Withdraw (val monthlyLimit: Double) extends AccountAccess
+    final case class Withdraw (monthlyLimit: Double) extends AccountAccess
   }
 
-  final case class Holding(val value: Double, currency: Currency)
+  final case class Holding(value: Double, currency: Currency)
 
   case class Account(owner: CustomerId, permissions: Map[CustomerId, AccountAccess], `type`: AccountType, amount: Holding)
 }
