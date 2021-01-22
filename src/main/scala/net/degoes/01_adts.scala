@@ -82,7 +82,7 @@ object credit_card {
   sealed trait Recurrence
   object Recurrence {
     final case object OneTime extends Recurrence
-    final case class Recurring(startDate: java.time.LocalDate, interval: TemporalType)
+    final case class Recurring(startDate: java.time.LocalDate, interval: TemporalType) extends Recurrence
   }
 
   sealed trait TemporalType {
@@ -225,7 +225,8 @@ object bank {
    */
   type CustomerId
   type CustomerAddress
-  final case class Customer(id: CustomerId, address: CustomerAddress)
+  type Email
+  final case class Customer(id: CustomerId, address: CustomerAddress, email: Email)
 
   /**
    * EXERCISE 2
@@ -235,7 +236,22 @@ object bank {
    * against a given currency. Another account type allows the user to earn
    * interest at a given rate for the holdings in a given currency.
    */
-  type AccountType
+  sealed trait Currency {
+    val name: String
+  }
+  object Currency {
+    case object NOK extends Currency  { val name = "Norwegian Kroner" }
+    case object USD extends Currency { val name = "US Dollars" }
+  }
+
+  sealed trait AccountType
+  object AccountType {
+    case class CheckingAccount(customerId: CustomerId, currencies: Set[Currency]) extends AccountType
+    case class SavingsAccount(customerId: CustomerId, amount: Double, interestRate: InterestRate)
+  }
+
+  type InterestRate
+
 
   /**
    * EXERCISE 3
