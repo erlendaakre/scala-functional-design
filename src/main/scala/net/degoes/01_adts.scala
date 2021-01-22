@@ -284,7 +284,11 @@ object portfolio {
    * Using only sealed traits and case classes, develop a model of a stock
    * exchange. Ensure there exist values for NASDAQ and NYSE.
    */
-  type Exchange
+  sealed trait Exchange
+  object Exchange {
+    final case object NYSE extends Exchange
+    final case object NASDAQ extends Exchange
+  }
 
   /**
    * EXERCISE 2
@@ -292,7 +296,13 @@ object portfolio {
    * Using only sealed traits and case classes, develop a model of a currency
    * type.
    */
-  type CurrencyType
+  sealed trait CurrencyType {
+    val name: String
+  }
+  object CurrencyType {
+    final case object NOK extends CurrencyType  { val name = "Norwegian Kroner" }
+    final case object USD extends CurrencyType { val name = "US Dollars" }
+  }
 
   /**
    * EXERCISE 3
@@ -300,7 +310,10 @@ object portfolio {
    * Using only sealed traits and case classes, develop a model of a stock
    * symbol. Ensure there exists a value for Apple's stock (APPL).
    */
-  type StockSymbol
+  sealed abstract case class StockSymbol(ticker: String, name: String, exchange: Exchange)
+  object StockSymbol {
+    val APPL: StockSymbol = new StockSymbol("APPL", "Apple Computers", Exchange.NASDAQ) {}
+  }
 
   /**
    * EXERCISE 4
@@ -308,7 +321,8 @@ object portfolio {
    * Using only sealed traits and case classes, develop a model of a portfolio
    * held by a user of the web application.
    */
-  type Portfolio
+  type NumberOfStocks = Double
+  case class Portfolio(user: User, holdings: Map[StockSymbol, NumberOfStocks])
 
   /**
    * EXERCISE 5
@@ -316,7 +330,9 @@ object portfolio {
    * Using only sealed traits and case classes, develop a model of a user of
    * the web application.
    */
-  type User
+  type UserId
+  type UserAddress
+  final case class User(userId: UserId, address: UserAddress, portfolio: Portfolio)
 
   /**
    * EXERCISE 6
@@ -324,7 +340,11 @@ object portfolio {
    * Using only sealed traits and case classes, develop a model of a trade type.
    * Example trade types might include Buy and Sell.
    */
-  type TradeType
+  sealed trait TradeType
+  object TradeType {
+    final case object Sell extends TradeType
+    final case object Buy extends  TradeType
+  }
 
   /**
    * EXERCISE 7
@@ -333,5 +353,28 @@ object portfolio {
    * which involves a particular trade type of a specific stock symbol at
    * specific prices.
    */
-  type Trade
+  final case class Transaction(currency: CurrencyType, amount: Double)
+  final case class TradeOpt(userId: UserId, tradeType: TradeType, stock: StockSymbol, numberOfStocks: NumberOfStocks,
+                         transaction: Transaction, orderTime: java.time.LocalDateTime,
+                          completionTime: Option[java.time.LocalDateTime])
+
+  sealed trait Trade {
+    val userId: UserId
+    val tradeType: TradeType
+    val stock: StockSymbol
+  }
+  object Trade {
+    final case class Initiated( userId: UserId, tradeType: TradeType, limit: Transaction,
+                                     stock: StockSymbol, orderTime: java.time.LocalDateTime) extends Trade
+
+    final case class Completed( userId: UserId, tradeType: TradeType, limit: Transaction,
+                                     stock: StockSymbol, orderTime: java.time.LocalDateTime,
+                                     completionTime: java.time.LocalDateTime) extends Trade
+
+  }
+
+  // testing
+  def finalizeTrade(t: Trade.Initiated): Trade.Completed = ???
+  val x: Trade.Initiated = Trade.Initiated(???, ???, ???, ???, ???)
+  val y: Trade.Completed = finalizeTrade(x)
 }
