@@ -240,14 +240,14 @@ object bank {
     val name: String
   }
   object Currency {
-    case object NOK extends Currency  { val name = "Norwegian Kroner" }
-    case object USD extends Currency { val name = "US Dollars" }
+    final case object NOK extends Currency  { val name = "Norwegian Kroner" }
+    final case object USD extends Currency { val name = "US Dollars" }
   }
 
   sealed trait AccountType
   object AccountType {
-    case class CheckingAccount(customerId: CustomerId, currencies: Set[Currency]) extends AccountType
-    case class SavingsAccount(customerId: CustomerId, amount: Double, interestRate: InterestRate)
+    final case class CheckingAccount(customerId: CustomerId, currencies: Set[Currency]) extends AccountType
+    final case class SavingsAccount(customerId: CustomerId, interestRate: InterestRate)
   }
 
   type InterestRate
@@ -260,7 +260,15 @@ object bank {
    * account, including details on the type of bank account, holdings, customer
    * who owns the bank account, and customers who have access to the bank account.
    */
-  type Account
+  sealed trait AccountAccess
+  object AccountAccess {
+    final case object ViewBalance extends AccountAccess
+    final case class Withdraw (val monthlyLimit: Double) extends AccountAccess
+  }
+
+  final case class Holding(val value: Double, currency: Currency)
+
+  case class Account(owner: CustomerId, permissions: Map[CustomerId, AccountAccess], `type`: AccountType, amount: Holding)
 }
 
 /**
