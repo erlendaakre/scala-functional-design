@@ -44,7 +44,21 @@ object input_stream {
      * exhausted, it will close the first input stream, make the second
      * input stream, and continue reading from the second one.
      */
-    def ++(that: => IStream): IStream = ???
+    def ++(that: => IStream): IStream = IStream(() => {
+      val a = self.createInputStream()
+
+      new InputStream {
+        override def read(): Int = {
+          val byte = a.read()
+          if (byte != -1)  byte
+          else {
+            val b = that.createInputStream()
+            a.close()
+            b.read()
+          }
+        }
+      }
+    })
 
     /**
      * EXERCISE 2
