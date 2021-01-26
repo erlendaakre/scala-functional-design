@@ -66,15 +66,6 @@ object input_stream {
       }
     })
 
-    // Test
-    def foo(args: Array[String]): Unit = {
-      val a = IStream(() => new StringBufferInputStream("abc"))
-      val b = IStream(() => new StringBufferInputStream("def"))
-      val c = (a ++ b).createInputStream()
-
-      println("bytes: " + c.readAllBytes)
-    }
-
     /**
      * EXERCISE 2
      *
