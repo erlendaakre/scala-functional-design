@@ -141,7 +141,7 @@ object email_filter {
      * Add an "and" operator that will match an email if both the first and
      * the second email filter match the email.
      */
-    def &&(that: EmailFilter): EmailFilter = ???
+    def &&(that: EmailFilter): EmailFilter = EmailFilter((e: Email) => self.matches(e) && that.matches(e))
 
     /**
      * EXERCISE 2
