@@ -1,5 +1,7 @@
 package net.degoes
 
+import java.io.StringBufferInputStream
+
 /*
 * Day 1 - 4:18:30
  * INTRODUCTION
@@ -45,20 +47,33 @@ object input_stream {
      * input stream, and continue reading from the second one.
      */
     def ++(that: => IStream): IStream = IStream(() => {
-      val a = self.createInputStream()
+      var stream = self.createInputStream()
+      var firstRead = false
 
       new InputStream {
+        override def close(): Unit = stream.close()
+
         override def read(): Int = {
-          val byte = a.read()
-          if (byte != -1)  byte
-          else {
-            val b = that.createInputStream()
-            a.close()
-            b.read()
+            val byte = stream.read()
+            if (byte == -1 && !firstRead) {
+              firstRead = true
+              stream.close()
+              stream = that.createInputStream()
+              read()
+            }
+            else byte
           }
-        }
       }
     })
+
+    // Test
+    def foo(args: Array[String]): Unit = {
+      val a = IStream(() => new StringBufferInputStream("abc"))
+      val b = IStream(() => new StringBufferInputStream("def"))
+      val c = (a ++ b).createInputStream()
+
+      println("bytes: " + c.readAllBytes)
+    }
 
     /**
      * EXERCISE 2
