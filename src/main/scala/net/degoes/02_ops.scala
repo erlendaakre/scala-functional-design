@@ -1,6 +1,6 @@
 package net.degoes
 
-import java.io.StringBufferInputStream
+import java.io.{BufferedInputStream, StringBufferInputStream}
 import scala.util.Try
 
 /*
@@ -90,7 +90,7 @@ object input_stream {
      * create the input stream, but wrap it in Java's `BufferedInputStream`
      * before returning it.
      */
-    def buffered: IStream = ???
+    def buffered: IStream = IStream(() => new BufferedInputStream(self.createInputStream()))
   }
   object IStream {
 
