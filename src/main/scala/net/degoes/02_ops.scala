@@ -57,15 +57,15 @@ object input_stream {
 
         @tailrec
         override def read(): Int = {
-            val byte = stream.read()
-            if (byte == -1 && !firstRead) {
-              firstRead = true
-              stream.close()
-              stream = that.createInputStream()
-              read()
-            }
-            else byte
+          val byte = stream.read()
+          if (byte == -1 && !firstRead) {
+            firstRead = true
+            stream.close()
+            stream = that.createInputStream()
+            read()
           }
+          else byte
+        }
       }
     })
 
