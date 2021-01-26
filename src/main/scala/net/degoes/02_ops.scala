@@ -1,6 +1,7 @@
 package net.degoes
 
 import java.io.StringBufferInputStream
+import scala.util.Try
 
 /*
 * Day 1 - 4:18:30
@@ -73,7 +74,14 @@ object input_stream {
      * try to create the first input stream, but if that fails by throwing
      * an exception, it will then try to create the second input stream.
      */
-    def orElse(that: => IStream): IStream = ???
+    def orElse(that: => IStream): IStream = IStream(() => {
+      try {
+        self.createInputStream()
+      }
+      catch {
+        case _: java.io.IOException => that.createInputStream()
+      }
+    })
 
     /**
      * EXERCISE 3
