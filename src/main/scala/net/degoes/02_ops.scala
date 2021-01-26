@@ -1,6 +1,5 @@
 package net.degoes
 
-import java.io.{BufferedInputStream, StringBufferInputStream}
 import scala.annotation.tailrec
 import scala.util.Try
 
@@ -92,7 +91,7 @@ object input_stream {
      * create the input stream, but wrap it in Java's `BufferedInputStream`
      * before returning it.
      */
-    def buffered: IStream = IStream(() => new BufferedInputStream(self.createInputStream()))
+    def buffered: IStream = IStream(() => new java.io.BufferedInputStream(self.createInputStream()))
   }
 
   object IStream {
@@ -180,10 +179,12 @@ object email_filter {
    * addressed to "john@doe.com". Build this filter up compositionally
    * by using the defined constructors and operators.
    */
-  lazy val emailFilter1 = EmailFilter.subjectContains("discount") && EmailFilter.bodyContains("N95") && !EmailFilter.senderIs(Address("john@doe.com"))
+  lazy val emailFilter1: EmailFilter = EmailFilter.subjectContains("discount") &&
+    EmailFilter.bodyContains("N95") && !EmailFilter.senderIs(Address("john@doe.com"))
 }
 
 /**
+ * DAY 1 - 05:08:45
  * DATA TRANSFORM - EXERCISE SET 3
  *
  * Consider an email marketing platform, which allows users to upload contacts.
@@ -310,6 +311,7 @@ object contact_processing {
       }
   }
 
+  // Models how to transform contact data from one schema to another
   final case class SchemaMapping(map: ContactsCSV => MappingResult[ContactsCSV]) { self =>
 
     /**
