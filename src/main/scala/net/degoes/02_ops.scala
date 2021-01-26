@@ -149,15 +149,18 @@ object email_filter {
      * Add an "or" operator that will match an email if either the first or
      * the second email filter match the email.
      */
-    def ||(that: EmailFilter): EmailFilter = ???
+    def ||(that: EmailFilter): EmailFilter = EmailFilter(e => self.matches(e) || that.matches(e))
 
     /**
      * EXERCISE 3
      *
      * Add a "negate" operator that will match an email if this email filter
      * does NOT match an email.
+     *
+     * NOTE: scala will expand `!`  to `unary_!`
      */
-    def unary_! : EmailFilter = ???
+    def unary_! : EmailFilter = EmailFilter(email => !self.matches(email))
+
   }
   object EmailFilter {
     def senderIs(address: Address): EmailFilter = EmailFilter(_.sender == address)
@@ -177,7 +180,7 @@ object email_filter {
    * addressed to "john@doe.com". Build this filter up compositionally
    * by using the defined constructors and operators.
    */
-  lazy val emailFilter1 = ???
+  lazy val emailFilter1 = EmailFilter.subjectContains("discount") && EmailFilter.bodyContains("N95") && !EmailFilter.senderIs(Address("john@doe.com"))
 }
 
 /**
