@@ -1,6 +1,7 @@
 package net.degoes
 
 import java.io.{BufferedInputStream, StringBufferInputStream}
+import scala.annotation.tailrec
 import scala.util.Try
 
 /*
@@ -54,6 +55,7 @@ object input_stream {
       new InputStream {
         override def close(): Unit = stream.close()
 
+        @tailrec
         override def read(): Int = {
             val byte = stream.read()
             if (byte == -1 && !firstRead) {
@@ -92,6 +94,7 @@ object input_stream {
      */
     def buffered: IStream = IStream(() => new BufferedInputStream(self.createInputStream()))
   }
+
   object IStream {
 
     /**
@@ -113,7 +116,8 @@ object input_stream {
    * or will read from the concatenation of all `secondaries`,
    * and will buffer everything.
    */
-  lazy val solution: IStream = ???
+  lazy val solution: IStream =
+    primary.orElse(secondaries.fold(IStream.empty)(_ ++ _)).buffered
 
   lazy val primary: IStream           = ???
   lazy val secondaries: List[IStream] = ???
