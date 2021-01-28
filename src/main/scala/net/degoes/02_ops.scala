@@ -201,6 +201,7 @@ object contact_processing {
     def add(name: String): SchemaCSV = copy(columnNames = columnNames ++ List(name))
   }
 
+  // contacts (schema + data (rows of columns))
   final case class ContactsCSV(schema: SchemaCSV, content: Vector[Vector[String]]) { self =>
     def get(column: String): Option[Vector[String]] =
       columnOf(column).map(i => content.map(row => row(i)))
@@ -323,7 +324,12 @@ object contact_processing {
      * then the result must also fail. Only if both schema mappings succeed
      * can the resulting schema mapping succeed.
      */
-    def +(that: SchemaMapping): SchemaMapping = ???
+    def +(that: SchemaMapping): SchemaMapping =
+      SchemaMapping(contacts1 => MappingResult
+//      for {
+//        first <- self
+//        second <- that.
+//      }
 
     /**
      * EXERCISE 2
