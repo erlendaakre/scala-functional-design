@@ -366,7 +366,12 @@ object contact_processing {
      *
      * Add a constructor for `SchemaMapping` that renames a column.
      */
-    def rename(oldName: String, newName: String): SchemaMapping = ???
+    def rename(oldName: String, newName: String): SchemaMapping = {
+      SchemaMapping { list =>
+      val warn = if(list.columnOf(oldName).isEmpty) s"Column $oldName not found" :: Nil else Nil
+        MappingResult.Success(warn, list.rename(oldName, newName))
+      }
+    }
 
     /**
      * EXERCISE 5
