@@ -396,7 +396,10 @@ object contact_processing {
      * Add a constructor for `SchemaMapping` that moves the column of the
      * specified name to the jth position.
      */
-    def relocate(column: String, j: Int): SchemaMapping = ???
+    def relocate(column: String, j: Int): SchemaMapping =
+      SchemaMapping { list =>
+        MappingResult.fromOption(list.relocate(column, j), "could not relocate $column to posistion $j")
+      }
 
     /**
      * EXERCISE 7
@@ -404,7 +407,9 @@ object contact_processing {
      * Add a constructor for `SchemaMapping` that deletes the column of the
      * specified name.
      */
-    def delete(name: String): SchemaMapping = ???
+    def delete(name: String): SchemaMapping = SchemaMapping { list =>
+      MappingResult.Success(Nil, list.delete("name"))
+    }
   }
 
   /**
