@@ -381,11 +381,12 @@ object contact_processing {
     def combine(leftColumn: String, rightColumn: String)(newName: String)(
       f: (String, String) => String
     ): SchemaMapping = SchemaMapping { list =>
-      val x = list.combine(leftColumn, rightColumn)(newName)(f)
-      x match {
-        case c: Some[ContactsCSV] => MappingResult.Success(Nil, c.get)
-        case None => MappingResult.Failure(s"Could not combine $leftColumn with $rightColumn" :: Nil)
-      }
+//      val x = list.combine(leftColumn, rightColumn)(newName)(f)
+//      x match {
+//        case c: Some[ContactsCSV] => MappingResult.Success(Nil, c.get)
+//        case None => MappingResult.Failure(s"Could not combine $leftColumn with $rightColumn" :: Nil)
+//      }
+      MappingResult.fromOption(list.combine(leftColumn, rightColumn)(newName)(f), s"Could not combine $leftColumn with $rightColumn")
     }
 
     /**
