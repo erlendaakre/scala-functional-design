@@ -426,7 +426,7 @@ object contact_processing {
         "unable to process"
       )
     } + SchemaMapping { c =>
-        MappingResult.fromOption(c.relocate("email_address", 1), "unable to move email address to pos 2")
+        MappingResult.fromOption(c.relocate("email_address", 0), "unable to move email address to pos 2")
       }
 
   val UserUploadSchema: SchemaCSV =
