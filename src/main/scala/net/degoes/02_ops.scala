@@ -340,11 +340,14 @@ object contact_processing {
      * applying the effects of the first one, unless it fails, and in that
      * case, applying the effects of the second one.
      */
-    def orElse(that: SchemaMapping): SchemaMapping = SchemaMapping { first =>
-      val m1 = self.map(first)
-      m1 match {
-        case MappingResult.Success(_, _) => m1
-        case MappingResult.Failure(errors) => that.map(first)
+    def orElse(that: SchemaMapping): SchemaMapping = {
+//      SchemaMapping { list => self.map(list).orElse(that.map(list)) }
+      SchemaMapping { list =>
+        val m1 = self.map(list)
+        m1 match {
+          case MappingResult.Success(_, _) => m1
+          case MappingResult.Failure(errors) => that.map(list)
+        }
       }
     }
 
