@@ -368,7 +368,7 @@ object contact_processing {
      */
     def rename(oldName: String, newName: String): SchemaMapping = {
       SchemaMapping { list =>
-      val warn = if(list.columnOf(oldName).isEmpty) s"Column $oldName not found" :: Nil else Nil
+        val warn = if (list.columnOf(oldName).isEmpty) s"Column $oldName not found" :: Nil else Nil
         MappingResult.Success(warn, list.rename(oldName, newName))
       }
     }
@@ -381,12 +381,13 @@ object contact_processing {
     def combine(leftColumn: String, rightColumn: String)(newName: String)(
       f: (String, String) => String
     ): SchemaMapping = SchemaMapping { list =>
-//      val x = list.combine(leftColumn, rightColumn)(newName)(f)
-//      x match {
-//        case c: Some[ContactsCSV] => MappingResult.Success(Nil, c.get)
-//        case None => MappingResult.Failure(s"Could not combine $leftColumn with $rightColumn" :: Nil)
-//      }
-      MappingResult.fromOption(list.combine(leftColumn, rightColumn)(newName)(f), s"Could not combine $leftColumn with $rightColumn")
+      //      val x = list.combine(leftColumn, rightColumn)(newName)(f)
+      //      x match {
+      //        case c: Some[ContactsCSV] => MappingResult.Success(Nil, c.get)
+      //        case None => MappingResult.Failure(s"Could not combine $leftColumn with $rightColumn" :: Nil)
+      //      }
+      MappingResult.fromOption(list.combine(leftColumn, rightColumn)(newName)(f),
+        s"Could not combine $leftColumn with $rightColumn")
     }
 
     /**
