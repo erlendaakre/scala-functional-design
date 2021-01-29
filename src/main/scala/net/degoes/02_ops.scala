@@ -1,10 +1,9 @@
 package net.degoes
 
 import scala.annotation.tailrec
-import scala.util.Try
 
 /*
-* Day 1 - 4:18:30
+ * Day 1 - 4:18:30
  * INTRODUCTION
  *
  * In Functional Design, immutable values often model solutions to a problem,
@@ -47,8 +46,8 @@ object input_stream {
      * exhausted, it will close the first input stream, make the second
      * input stream, and continue reading from the second one.
      */
-    def ++(that: => IStream): IStream = IStream(() => {
-      var stream = self.createInputStream()
+    def ++(that: => IStream): IStream = IStream { () =>
+      var stream    = self.createInputStream()
       var firstRead = false
 
       new InputStream {
@@ -62,11 +61,10 @@ object input_stream {
             stream.close()
             stream = that.createInputStream()
             read()
-          }
-          else byte
+          } else byte
         }
       }
-    })
+    }
 
     /**
      * EXERCISE 2
@@ -75,14 +73,13 @@ object input_stream {
      * try to create the first input stream, but if that fails by throwing
      * an exception, it will then try to create the second input stream.
      */
-    def orElse(that: => IStream): IStream = IStream(() => {
+    def orElse(that: => IStream): IStream = IStream { () =>
       try {
         self.createInputStream()
-      }
-      catch {
+      } catch {
         case _: java.io.IOException => that.createInputStream()
       }
-    })
+    }
 
     /**
      * EXERCISE 3
@@ -325,7 +322,7 @@ object contact_processing {
      * can the resulting schema mapping succeed.
      */
     def +(that: SchemaMapping): SchemaMapping =
-    //      SchemaMapping (first => self.map(first).flatMap(that.map(_)))
+      //      SchemaMapping (first => self.map(first).flatMap(that.map(_)))
       SchemaMapping { first =>
         for {
           second <- self.map(first)
@@ -340,16 +337,15 @@ object contact_processing {
      * applying the effects of the first one, unless it fails, and in that
      * case, applying the effects of the second one.
      */
-    def orElse(that: SchemaMapping): SchemaMapping = {
+    def orElse(that: SchemaMapping): SchemaMapping =
 //      SchemaMapping { list => self.map(list).orElse(that.map(list)) }
       SchemaMapping { list =>
         val m1 = self.map(list)
         m1 match {
-          case MappingResult.Success(_, _) => m1
+          case MappingResult.Success(_, _)   => m1
           case MappingResult.Failure(errors) => that.map(list)
         }
       }
-    }
 
     /**
      * BONUS: EXERCISE 3
@@ -366,12 +362,11 @@ object contact_processing {
      *
      * Add a constructor for `SchemaMapping` that renames a column.
      */
-    def rename(oldName: String, newName: String): SchemaMapping = {
+    def rename(oldName: String, newName: String): SchemaMapping =
       SchemaMapping { list =>
         val warn = if (list.columnOf(oldName).isEmpty) s"Column $oldName not found" :: Nil else Nil
         MappingResult.Success(warn, list.rename(oldName, newName))
       }
-    }
 
     /**
      * EXERCISE 5
@@ -386,8 +381,10 @@ object contact_processing {
       //        case c: Some[ContactsCSV] => MappingResult.Success(Nil, c.get)
       //        case None => MappingResult.Failure(s"Could not combine $leftColumn with $rightColumn" :: Nil)
       //      }
-      MappingResult.fromOption(list.combine(leftColumn, rightColumn)(newName)(f),
-        s"Could not combine $leftColumn with $rightColumn")
+      MappingResult.fromOption(
+        list.combine(leftColumn, rightColumn)(newName)(f),
+        s"Could not combine $leftColumn with $rightColumn"
+      )
     }
 
     /**
@@ -408,7 +405,7 @@ object contact_processing {
      * specified name.
      */
     def delete(name: String): SchemaMapping = SchemaMapping { list =>
-      MappingResult.Success(Nil, list.delete("name"))
+      MappingResult.Success(Nil, list.delete(name))
     }
   }
 
