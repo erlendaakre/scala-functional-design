@@ -417,17 +417,11 @@ object contact_processing {
    * constructed from constructors and operators.
    */
   lazy val schemaMapping: SchemaMapping =
-    SchemaMapping { c =>
-      MappingResult.fromOption(
-        c.rename("email", "email_address")
-          .rename("street", "street_address")
-          .rename("postal", "postal_code")
-          .combine("fname", "lname")("full_name")((a, b) => "$a $b"),
-        "unable to process"
-      )
-    } + SchemaMapping { c =>
-        MappingResult.fromOption(c.relocate("email_address", 0), "unable to move email address to pos 2")
-      }
+    SchemaMapping.combine("fname", "lname")("full_name")((a, b) => "$a $b") +
+      SchemaMapping.rename("email", "email_address") +
+      SchemaMapping.rename("street", "street_address") +
+      SchemaMapping.rename("postal", "postal_code") +
+      SchemaMapping.relocate("email_address", 0)
 
   val UserUploadSchema: SchemaCSV =
     SchemaCSV(List("email", "fname", "lname", "country", "street", "postal"))
