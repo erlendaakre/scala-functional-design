@@ -416,14 +416,18 @@ object contact_processing {
    * company's official schema for contacts, by composing schema mappings
    * constructed from constructors and operators.
    */
-  lazy val schemaMapping: SchemaMapping = SchemaMapping { c =>
-    MappingResult.fromOption(
-      c.rename("email", "email_address")
-      .rename("street", "street_address")
-      .rename("postal", "postal_code")
-      .combine("fname", "lname")("full_name")((a,b) => "$a $b"),
-      "unable to process")
-  }
+  lazy val schemaMapping: SchemaMapping =
+    SchemaMapping { c =>
+      MappingResult.fromOption(
+        c.rename("email", "email_address")
+          .rename("street", "street_address")
+          .rename("postal", "postal_code")
+          .combine("fname", "lname")("full_name")((a, b) => "$a $b"),
+        "unable to process"
+      )
+    } + SchemaMapping { c =>
+        MappingResult.fromOption(c.relocate("email_address", 1), "unable to move email address to pos 2")
+      }
 
   val UserUploadSchema: SchemaCSV =
     SchemaCSV(List("email", "fname", "lname", "country", "street", "postal"))
