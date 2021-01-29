@@ -325,11 +325,13 @@ object contact_processing {
      * can the resulting schema mapping succeed.
      */
     def +(that: SchemaMapping): SchemaMapping =
-      SchemaMapping(contacts1 => MappingResult
-//      for {
-//        first <- self
-//        second <- that.
-//      }
+    //      SchemaMapping (first => self.map(first).flatMap(that.map(_)))
+      SchemaMapping { first =>
+        for {
+          second <- self.map(first)
+          second <- that.map(second)
+        } yield second
+      }
 
     /**
      * EXERCISE 2
@@ -338,7 +340,13 @@ object contact_processing {
      * applying the effects of the first one, unless it fails, and in that
      * case, applying the effects of the second one.
      */
-    def orElse(that: SchemaMapping): SchemaMapping = ???
+    def orElse(that: SchemaMapping): SchemaMapping = SchemaMapping { first =>
+      val m1 = self.map(first)
+      m1 match {
+        case MappingResult.Success(_, _) => m1
+        case MappingResult.Failure(errors) => that.map(first)
+      }
+    }
 
     /**
      * BONUS: EXERCISE 3
