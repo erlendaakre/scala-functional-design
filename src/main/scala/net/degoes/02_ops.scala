@@ -431,6 +431,8 @@ object contact_processing {
 }
 
 /**
+ * Day 1 - 5:38:30
+ *
  * CARD GAME - EXERCISE SET 4
  *
  * Consider a game such as FreeCell or Solitaire that is played using a deck of cards.
@@ -471,7 +473,10 @@ object ui_events {
      * Add a method `+` that composes two listeners into a single listener,
      * by sending each game event to both listeners.
      */
-    def +(that: Listener): Listener = ???
+    def +(that: Listener): Listener = Listener { e =>
+      self.onEvent(e)
+      that.onEvent(e)
+    }
 
     /**
      * EXERCISE 2
@@ -480,7 +485,10 @@ object ui_events {
      * by sending each game event to either the left listener, if it does not
      * throw an exception, or the right listener, if the left throws an exception.
      */
-    def orElse(that: Listener): Listener = ???
+    def orElse(that: Listener): Listener = Listener { e =>
+      try self.onEvent(e)
+      catch { case _: Exception => that.onEvent(e) }
+    }
 
     /**
      * EXERCISE 3
