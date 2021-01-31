@@ -487,10 +487,12 @@ object ui_events {
      */
     def orElse(that: Listener): Listener = Listener { e =>
       try self.onEvent(e)
-      catch { case _: Exception => that.onEvent(e) }
+//      catch { case _: Exception => that.onEvent(e) }
+      catch { case scala.util.control.NonFatal(_) => that.onEvent(e) }
     }
 
     /**
+     * Day 1 - 5:43:30
      * EXERCISE 3
      *
      * Add a `runOn` operator that returns a Listener that will call this one's
