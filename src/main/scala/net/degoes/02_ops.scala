@@ -498,7 +498,13 @@ object ui_events {
      * Add a `runOn` operator that returns a Listener that will call this one's
      * `onEvent` callback on the specified `ExecutionContext`.
      */
-    def runOn(ec: scala.concurrent.ExecutionContext): Listener = ???
+    def runOn(ec: scala.concurrent.ExecutionContext): Listener = Listener { e =>
+      // TODO: Why does this not work?
+      //      val foo = () => self.onEvent(e)
+      //      ec.execute(foo)
+
+      ec.execute(() => self.onEvent(e))
+    }
 
     /**
      * EXERCISE 4
