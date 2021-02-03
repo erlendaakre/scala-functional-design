@@ -395,7 +395,7 @@ object contact_processing {
      */
     def relocate(column: String, j: Int): SchemaMapping =
       SchemaMapping { list =>
-        MappingResult.fromOption(list.relocate(column, j), "could not relocate $column to posistion $j")
+        MappingResult.fromOption(list.relocate(column, j), "could not relocate $column to position $j")
       }
 
     /**
@@ -512,10 +512,15 @@ object ui_events {
      * Add a `debug` unary operator that will call the `onEvent` callback, but
      * before it does, it will print out the game event to the console.
      */
-    def debug: Listener = ???
+    def debug: Listener = Listener { e =>
+      println(e)
+      self.onEvent(e)
+    }
   }
 
   /**
+   *
+   * DAY 1 - 5:47:47
    * EXERCISE 5
    *
    * Create a composite listener that runs all of the following three
