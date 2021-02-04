@@ -519,7 +519,6 @@ object ui_events {
   }
 
   /**
-   *
    * DAY 1 - 5:47:47
    * EXERCISE 5
    *
@@ -527,7 +526,7 @@ object ui_events {
    * listeners in response to each game event, making the gfxUpdateListener
    * run on the `uiExecutionContext`, and debugging the input events.
    */
-  lazy val solution = ???
+  lazy val solution = twinkleAnimationListener + motionDetectionListener + gfxUpdateListener.runOn(uiExecutionContext).debug
 
   lazy val twinkleAnimationListener: Listener = ???
   lazy val motionDetectionListener: Listener  = ???
@@ -537,6 +536,7 @@ object ui_events {
 }
 
 /**
+ * Day 1 - 5:52:00
  * EDUCATION - GRADUATION PROJECT
  *
  * Consider a console-based educational application that tests the user's
