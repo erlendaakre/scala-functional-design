@@ -566,7 +566,8 @@ object education {
      * Add a `+` operator that combines this quiz result with the specified
      * quiz result.
      */
-    def +(that: QuizResult): QuizResult = ???
+    def +(that: QuizResult): QuizResult = QuizResult(self.correctPoints + that.correctPoints,
+      self.bonusPoints + that.bonusPoints, self.wrongPoints + that.wrongPoints, self.wrong + that.wrong)
   }
   object QuizResult {
 
@@ -576,7 +577,7 @@ object education {
      * Add an `empty` QuizResult that, when combined with any quiz result,
      * returns that same quiz result.
      */
-    def empty: QuizResult = ???
+    def empty: QuizResult = QuizResult(0, 0, 0, Vector.empty[String])
   }
 
   final case class Quiz(run: () => QuizResult) { self =>
@@ -586,16 +587,18 @@ object education {
      *
      * Add an operator `+` that appends this quiz to the specified quiz.
      */
-    def +(that: Quiz): Quiz = ???
+    def +(that: Quiz): Quiz = Quiz(() => self.run() + that.run()
+    )
 
     /**
      * EXERCISE 4
      *
      * Add a unary operator `bonus` that marks this quiz as a bonus quiz.
      */
-    def bonus: Quiz = ???
+    def bonus: Quiz = Quiz( () => self.run().toBonus )
 
     /**
+     * 06:05:45
      * EXERCISE 5
      *
      * Add a conditional operator that calls the specified function on the result of running the
