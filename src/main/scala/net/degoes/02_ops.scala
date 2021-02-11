@@ -502,7 +502,6 @@ object ui_events {
       // TODO: Why does this not work?
       //      val foo = () => self.onEvent(e)
       //      ec.execute(foo)
-
       ec.execute(() => self.onEvent(e))
     }
 
@@ -605,7 +604,12 @@ object education {
      * quiz, and if it returns true, will execute the `ifPass` quiz afterward; but otherwise, will
      * execute the `ifFail` quiz.
      */
-    def check(f: QuizResult => Boolean)(ifPass: Quiz, ifFail: Quiz): Quiz = ???
+    def check(f: QuizResult => Boolean)(ifPass: Quiz, ifFail: Quiz): Quiz =
+      Quiz { () =>
+        val first = self.run()
+        val second = if (f(first)) ifPass else ifFail
+        first + second.run()
+      }
   }
   object Quiz {
     private def grade[A](f: String => A, checker: Checker[A]): QuizResult =
@@ -636,13 +640,20 @@ object education {
         }
       }
 
-    /**
+    /*
      * EXERCISE 6
      *
      * Add an `empty` Quiz that does not ask any questions and only returns
      * an empty QuizResult.
+     *
+     * Empty quiz has the following properties, if you have any quiz q:
+     *  q + Empty = q
+     *  empty + q = q
+     *
+     * The identity property
+     * Quiz is a monoid
      */
-    def empty: Quiz = ???
+    def empty: Quiz = Quiz(() => QuizResult.empty)
   }
 
   final case class Checker[-A](points: Int, isCorrect: A => Either[String, Unit])
