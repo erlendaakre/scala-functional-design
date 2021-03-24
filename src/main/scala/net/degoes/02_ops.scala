@@ -679,6 +679,11 @@ object education {
    * tough bonus question; and if the user fails the bonus question, fallback
    * to a simpler bonus question with fewer bonus points.
    */
-  lazy val exampleQuiz: Quiz =
-    Quiz(Question.TrueFalse("Is coffee the best hot beverage on planet earth?", Checker.isTrue(10)))
+  lazy val exampleQuiz: Quiz = {
+    Quiz(Question.TrueFalse("Is coffee the best hot beverage on planet earth?", Checker.isTrue(10))) +
+      Quiz(Question.TrueFalse("All work and no play makes Jack a dull boy", Checker.isTrue(10))) +
+      Quiz(Question.TrueFalse("Baboons are better than weasels", Checker.isFalse(10))) +
+      Quiz(Question.Text("Who's the greatest pirate who ever lived", Checker.isText(100)("Fannybaws"))).bonus
+        .check(q => q.correctPoints > 0)(Quiz.empty, Quiz(Question.Text("Kirk or Picard?", Checker.isText(20)("Picard"))).bonus)
+  }
 }
