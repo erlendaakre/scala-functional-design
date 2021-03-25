@@ -687,5 +687,15 @@ object education {
     val q5 = Quiz(Question.Text("Kirk or Picard?", Checker.isText(20)("Picard")))
 
     q1 + q2 + q3 + (q4.check(_.correctPoints > 0)(Quiz.empty, q5).bonus)
+
+    // Algebraic properties
+
+    // (q1 + q2) + q3 == q1 + (q2 + q3) // associative
+    // q1.bonus.bonus == q1.bonus // idempotent
+
+    // q1 + Quiz.empty == q1
+    // Quiz.empty + q1 == q1
+    // q1 + q2 != q2 + q1 // NOT commutative, the order of quizzes  matter
+
   }
 }
