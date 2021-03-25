@@ -651,8 +651,8 @@ object education {
      *  empty + q = q
      *
      * This is the Identity property, making Quiz a monoid.
-     * Identities are very useful in FP, when writing generic code, then that code can operate on specialised ways if
-     * we have an identity.
+     * Identities are very useful in FP when writing generic code, that code can then handle trivial/special cases
+     * e.g. Quiz.Check()
      */
     def empty: Quiz = Quiz(() => QuizResult.empty)
   }
