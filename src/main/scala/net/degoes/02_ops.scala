@@ -680,10 +680,12 @@ object education {
    * to a simpler bonus question with fewer bonus points.
    */
   lazy val exampleQuiz: Quiz = {
-    Quiz(Question.TrueFalse("Is coffee the best hot beverage on planet earth?", Checker.isTrue(10))) +
-      Quiz(Question.TrueFalse("All work and no play makes Jack a dull boy", Checker.isTrue(10))) +
-      Quiz(Question.TrueFalse("Baboons are better than weasels", Checker.isFalse(10))) +
-      Quiz(Question.Text("Who's the greatest pirate who ever lived", Checker.isText(100)("Fannybaws"))).bonus
-        .check(q => q.correctPoints > 0)(Quiz.empty, Quiz(Question.Text("Kirk or Picard?", Checker.isText(20)("Picard"))).bonus)
+    val q1 = Quiz(Question.TrueFalse("Is coffee the best hot beverage on planet earth?", Checker.isTrue(10)))
+    val q2 = Quiz(Question.TrueFalse("All work and no play makes Jack a dull boy", Checker.isTrue(10)))
+    val q3 = Quiz(Question.TrueFalse("Baboons are better than weasels", Checker.isFalse(10)))
+    val q4 = Quiz(Question.Text("Who's the greatest pirate who ever lived", Checker.isText(100)("Fannybaws")))
+    val q5 = Quiz(Question.Text("Kirk or Picard?", Checker.isText(20)("Picard")))
+
+    q1 + q2 + q3 + (q4.check(_.correctPoints > 0)(Quiz.empty, q5).bonus)
   }
 }
